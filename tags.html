@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>Taconic Biosciences Content Database Tags</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/editor.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/shCore.css">
+	<link rel="stylesheet" type="text/css" href="css/matrix.css">
+	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/6093312/792228/css/fonts.css" />
+	<style type="text/css" class="init">
+
+	</style>
+	<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script type="text/javascript" language="javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/dataTables.editor.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/editor.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" language="javascript" src="js/matrix.js"></script>
+	<script type="text/javascript" language="javascript" src="js/editor-matrix.js"></script>
+	<script type="text/javascript" language="javascript" class="init">
+
+
+
+var editor; // use a global for the submit and return data rendering in the examples
+
+$(document).ready(function() {
+	editor = new $.fn.dataTable.Editor( {
+		ajax: "php/tags.php",
+		table: "#example",
+		fields: [ {
+				label: "Name:",
+				name: "name"
+			}
+		]
+	} );
+
+	var table = $('#example').DataTable( {
+		lengthChange: true,
+		ajax: "php/tags.php",
+		dom: '<"top"Biflp<"clear">>rt<"bottom"p<"clear">>',
+		columns: [
+			{ data: "name" }
+		],
+		select: true,
+		buttons: [
+			{ extend: "create", editor: editor },
+			{ extend: "edit",   editor: editor },
+			{ extend: "remove", editor: editor }
+		]
+	} );
+
+
+} );
+
+
+
+	</script>
+</head>
+<body class="dt-example dt-example-bootstrap">
+	<div class="header clearfix box-shadow border-bottom" style="padding: 30px;">
+		<nav>
+							<ul class="nav nav-pills pull-right">
+								<li role="presentation"><a href="matrixdb.html">Database Editor</a></li>
+								<li role="presentation"><a href="index.html">Read Only</a></li>
+								<li role="presentation" class="active"><a href="tags.html">Tags Editor</a></li>
+							</ul>
+						</nav>
+	<a href="https://www.taconic.com"><img src="images/taconic-logo.png" height="39" alt="Taconic Biosciences"></a>  <!-- <h3 class="text-muted">Project name</h3> -->
+	</div>
+	<div class="container">
+
+		<section>
+			<h1>Taconic Biosciences Content Database Tags</h1>
+
+			<table id="example" class="table table-striped table-bordered" style="width:100%">
+				<thead>
+					<tr class="header-row">
+						<th>Name</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>Name</th>
+					</tr>
+				</tfoot>
+			</table>
+
+		</section>
+	</div>
+	<section>
+		<div class="footer">
+			<div class="row">
+				<div class="col-12 col-md">
+						<small class="d-block mb-3 text-muted" style="text-align:center">&copy; 2018 <a href="https://www.taconic.com">Taconic Biosciences, Inc.</a> All rights reserved.</small>
+				</div>
+
+			</div>
+		</div>
+	</section>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>Taconic Biosciences Content Database</title>
+	<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.5/css/select.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/keytable/2.3.2/css/keyTable.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="css/editor.bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/shCore.css">
+	<link rel="stylesheet" type="text/css" href="css/matrix.css">
+	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/6093312/792228/css/fonts.css" />	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+	<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script type="text/javascript" language="javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript" language="javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/keytable/2.3.2/js/dataTables.keyTable.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/dataTables.editor.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/editor.bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="js/editor.autoComplete.js"></script>
+	<script type="text/javascript" language="javascript" src="js/shCore.js"></script>
+	<script type="text/javascript" language="javascript" src="js/matrix.js"></script>
+	<script type="text/javascript" language="javascript" class="init">
+
+
+var editor; // use a global for the submit and return data rendering in the examples
+
+$(document).ready(function() {
+
+	var table = $('#matrix').DataTable( {
+		orderCellsTop: true,
+		order: [[ 6, "desc"]],
+		fixedHeader: true,
+		responsive: true,
+		pageLength: 100,
+		lengthChange: true,
+		lengthMenu: [50, 100, 150, 200],
+		dom: '<"top"Biflp<"clear">>rt<"bottom"p<"clear">>',
+		ajax: {
+			url: "php/matrix.php",
+			type: 'POST'
+		},
+		columns: [
+			{ data: "type.name" },
+			//{ data: "matrix.title", className: 'editable' },
+			//{ data: "matrix.url", className: 'editable' },
+			{ data: null, render: function ( data, type, row ) {
+				if (data.matrix.a4_url) {
+					return '<a href="'+ data.matrix.url +'" target="_blank">'+data.matrix.title+'</a><br><a href="'+ data.matrix.a4_url +'" target="_blank">'+data.matrix.title+' (A4)</a>';
+				} else {
+					return '<a href="'+ data.matrix.url +'" target="_blank">'+data.matrix.title+'</a>';
+				}
+
+			} },
+			{ data: null, render: function ( data, type, row ) {
+				// Combine the first and last names into a single table field
+				return '<a href="'+ data.matrix.content_url +'" target="_blank"><span class="'+data.type.name+'">'+ data.matrix.content_url +'</span></a>';
+			} },
+			{ data: "matrix.author", className: 'editable' },
+			{ data: "category.name" },
+			{ data: "models", render: "[, ].name" },
+			{ data: "matrix.pub_date" },
+			{ data: "tag", render: "[, ].name" },
+			{
+				data: "matrix.image",
+				render: function ( file_id ) {
+					return file_id ?
+						'<span class="how2use"><a href="'+table.file( 'files', file_id ).web_path+'" target="_blank"><i class="fas fa-hand-holding-usd"></i></a></span>' :
+						null;
+				},
+				defaultContent: " ",
+				title: "How to Use"
+			}
+		],
+		buttons: [
+			{
+				extend: 'collection',
+				text: 'Export',
+				buttons: [
+					'copy',
+					'excel',
+					'csv',
+					'pdf',
+					'print'
+				]
+			}
+		],
+		"rowCallback": function( row, data, index ) {
+			var rowType = data.matrix.type;
+			var cssType;
+			switch (rowType) {
+				case '1':
+				cssType = 'insight';
+				break;
+				case '2':
+				cssType = 'publication';
+				break;
+				case '3':
+				cssType = 'webinar';
+				break;
+				case '4':
+				cssType = 'whitepaper';
+				break;
+				case '5':
+				cssType = 'literature';
+				break;
+				case '7':
+				cssType = 'offer';
+				break;
+				case '6':
+				cssType = 'poster';
+				break;
+				case '8':
+				cssType = 'infographic';
+				break;
+				case '9':
+				cssType = 'priceguide';
+				break;
+				case '10':
+				cssType = 'tool';
+				break;
+				case '11':
+				cssType = 'how2use';
+				break;
+				default:
+				cssType = '';
+			}
+
+			$(row).addClass(cssType);
+
+                }
+	} );
+
+	$('#matrix thead tr').clone(true).appendTo( '#matrix thead' );
+		$('#matrix thead tr:eq(0)').addClass('header-row');
+    $('#matrix thead tr:eq(1) th').each( function (i) {
+			  var thisClass = $(this).attr('class');
+        var title = $(this).text();
+				$(this).replaceWith('<td class="'+thisClass+'"><input type="text" placeholder="'+title+'" /><button title="Clear Filter">X</button></td>');
+        //$(this).html( '<input type="text" style="width: 90px;" placeholder="Search '+title+'" />' );
+
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+
+$('#matrix_filter').append('<p style="float:left; margin-top: 15px;" id="contentTypes"><strong>Content Types:</strong> <span class="infographic">Infographics</span> <span class="insight">Insights</span> <span class="literature">Literature</span> <span class="offer">Offers</span> <span class="poster">Posters</span> <span class="priceguide">Pricing Guide</span> <span class="publication">Media Coverage</span> <span class="tool">Tools</span> <span class="webinar">Webinars</span> <span class="whitepaper">White Papers</span></p>');
+
+var chooseType = function() {
+	$('#contentTypes span').click(function() {
+		$('#matrix td.ctype input').val($(this).text());
+		$('#matrix td.ctype input').change();
+	});
+
+	$('#matrix td input').each( function(i) {
+		$(this).on( 'keyup change', function () {
+				if ( table.column(i).search() !== this.value ) {
+						table
+								.column(i)
+								.search( this.value )
+								.draw();
+				}
+		} );
+	});
+
+	$('#matrix td button').each( function(i) {
+		$(this).on( 'click', function() {
+			$(this).prev('input').val('').change();
+		});
+	});
+}
+
+chooseType();
+
+$('#funnel').on('mouseover', function() {
+	$('span.full').show();
+}).on('mouseout', function() {
+	$('span.full').hide();
+});
+} );
+
+
+
+	</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-1464204-7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-1464204-7');
+</script>
+
+</head>
+<body class="dt-example dt-example-bootstrap">
+	<div class="header clearfix box-shadow border-bottom" style="padding: 30px;">
+
+	<a href="https://www.taconic.com"><img src="images/taconic-logo.png" height="39" alt="Taconic Biosciences"></a>  <!-- <h3 class="text-muted">Project name</h3> -->
+	</div>
+	<div class="container">
+
+		<section id="main-section">
+			<h1 id="titleId"><div id="funnel"><img src="images/funnel.png" class="thum"><span class="full"><img src="images/funnel.png"></span></div>Taconic Biosciences<br>Content Database</h1>
+
+			<div class="clear"></div>
+<div class="table-responsive">
+
+			<table id="matrix" class="table table-striped table-bordered table-sm" style="width: 100%">
+				<thead>
+					<tr>
+						<th style="width:90px" class="ctype">Content Type</th>
+						<th style="min-width:200px;">Title/Landing Page</th>
+						<th style="width:60px; max-width: 60px;" class="cIcon">Content</th>
+						<th style="width:100px;">Author/Presenter</th>
+						<th style="width:120px;">Category</th>
+						<th style="width:100px;">Model</th>
+						<th style="width:100px;">Publish Date</th>
+						<th style="width:100px;">Tag</th>
+						<th style="width:80px;">How to Use</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<th>Content Type</th>
+						<th>Title/Landing Page</th>
+						<th>Content</th>
+						<th>Author/Presenter</th>
+						<th>Category</th>
+						<th>Model</th>
+						<th>Publish Date</th>
+						<th>Tag</th>
+						<th>How to Use</th>
+					</tr>
+				</tfoot>
+			</table>
+
+		</section>
+	</div>
+</div>
+	<section>
+		<div class="footer">
+			<div class="row">
+				<div class="col-12 col-md">
+						<small class="d-block mb-3 text-muted" style="text-align:center">&copy; 2018 <a href="https://www.taconic.com">Taconic Biosciences, Inc.</a> All rights reserved.</small>
+				</div>
+
+			</div>
+		</div>
+	</section>
+</body>
+</html>
