@@ -63,6 +63,7 @@ Editor::inst( $db, 'matrix' )
 			->setFormatter( Format::ifEmpty( NULL ) )
 			->validator( Validate::dbValues() ),
 		Field::inst( 'category.name' ),
+		Field::inst( 'matrix.inactive' ),
 		Field::inst( 'matrix.model' )
 			->options( Options::inst()
 				->table( 'models' )
