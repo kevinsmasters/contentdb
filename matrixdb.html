@@ -15,7 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/editor.bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/shCore.css">
 	<link rel="stylesheet" type="text/css" href="css/matrix.css">
-	<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/6093312/792228/css/fonts.css" />
+	<link rel="stylesheet" type="text/css" href="//cloud.typography.com/6093312/630704/css/fonts.css" />
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
 
 	<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -126,20 +126,30 @@ $(document).ready(function() {
 				name: "tag[].id",
 				type: "select",
 				multiple: true
-			}, {
-				label: "How to Use:",
-				name: "matrix.image",
-				type: "upload",
-				display: function ( file_id ) {
-					fileUrl = editor.file( 'files', file_id ).web_path;
-					urlSplit = fileUrl.split('/');
-					fileUrl = urlSplit[3]
-					return fileUrl;
+			}, 
+			{
+				label: "Inactive:",
+				name: "matrix.inactive",
+				type: "radio",
+				options: [
+					{ label: "Yes", value: 1 },
+					{ label: "No", value: 0 }
+				]
+			}, 
+			// {
+			// 	label: "How to Use:",
+			// 	name: "matrix.image",
+			// 	type: "upload",
+			// 	display: function ( file_id ) {
+			// 		fileUrl = editor.file( 'files', file_id ).web_path;
+			// 		urlSplit = fileUrl.split('/');
+			// 		fileUrl = urlSplit[3]
+			// 		return fileUrl;
 
-				},
-				clearText: "Clear",
-				noImageText: 'No file'
-			}
+			// 	},
+			// 	clearText: "Clear",
+			// 	noImageText: 'No file'
+			// }
 		]
 	} );
 
@@ -184,16 +194,23 @@ $(document).ready(function() {
 			{ data: "models", render: "[, ].name" },
 			{ data: "matrix.pub_date" },
 			{ data: "tag", render: "[, ].name" },
-			{
-				data: "matrix.image",
-				render: function ( file_id ) {
-					return file_id ?
-						'<span class="how2use"><a href="'+editor.file( 'files', file_id ).web_path+'" target="_blank"><i class="fas fa-hand-holding-usd"></i></a></span>' :
-						null;
-				},
-				defaultContent: " ",
-				title: "How to Use"
-			}
+			{ data: null, render: function (data, type, row) {
+				if (data.matrix.inactive == 0 ) {
+					return ''
+				} else {
+					return 'Inactive'
+				}
+			}},
+			// {
+			// 	data: "matrix.image",
+			// 	render: function ( file_id ) {
+			// 		return file_id ?
+			// 			'<span class="how2use"><a href="'+editor.file( 'files', file_id ).web_path+'" target="_blank"><i class="fas fa-hand-holding-usd"></i></a></span>' :
+			// 			null;
+			// 	},
+			// 	defaultContent: " ",
+			// 	title: "How to Use"
+			// }
 		],
 		keys: {
 			editor:  editor
@@ -410,7 +427,7 @@ chooseType();
 						<th style="width:100px;">Model</th>
 						<th style="width:100px;">Publish Date</th>
 						<th style="width:100px;">Tag</th>
-						<th style="width:80px;">How to Use</th>
+						<th style="width:20px;">Inactive</th>
 					</tr>
 				</thead>
 				<tfoot>
@@ -423,7 +440,7 @@ chooseType();
 						<th>Model</th>
 						<th>Publish Date</th>
 						<th>Tag</th>
-						<th>How to Use</th>
+						<th>Inactive</th>
 					</tr>
 				</tfoot>
 			</table>
@@ -464,6 +481,7 @@ chooseType();
 												</fieldset>
 												<fieldset class="contentDate">
 														<div data-editor-template="matrix.pub_date"></div>
+														<div data-editor-template="matrix.inactive"></div>
 												</fieldset>
 												<fieldset>
 													<div data-editor-template="matrix.image"></div>
